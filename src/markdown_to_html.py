@@ -29,4 +29,16 @@ def markdown_to_html_node(markdown):
                 list_node = ParentNode("li", children)
                 li_nodes.append(list_node)
             html_nodes.append(ParentNode("ul", li_nodes))
+        elif block_type == BlockType.ordered_list:
+            items = block.splitlines()
+            li_nodes = []
+            for item in items:
+                split_item = item.split(". ", 1)
+                if len(split_item) > 1:
+                    text = split_item[1]
+                    children = text_to_children(text)
+                    li_node = ParentNode("li", children)
+                    li_nodes.append(li_node)
+            node = ParentNode("ol", li_nodes)
+            html_nodes.append(node)
 
