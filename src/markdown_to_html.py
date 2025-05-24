@@ -11,9 +11,11 @@ def markdown_to_html_node(markdown):
         block_type = block_to_block_type(block)
 
         if block_type == BlockType.paragraph:
-            children = text_to_children(block)
+            joined_block = " ".join(block.splitlines())
+            children = text_to_children(joined_block)
             node = ParentNode("p", children)
             html_nodes.append(node)
+
         elif block_type == BlockType.heading:
             block = block.split(" ", 1)
             level = len(block[0])
@@ -21,6 +23,7 @@ def markdown_to_html_node(markdown):
             children = text_to_children(text)
             node = ParentNode("h" + str(level), children)
             html_nodes.append(node)
+
         elif block_type == BlockType.unordered_list:
             items = block.splitlines()
             li_nodes = []
@@ -30,6 +33,7 @@ def markdown_to_html_node(markdown):
                 list_node = ParentNode("li", children)
                 li_nodes.append(list_node)
             html_nodes.append(ParentNode("ul", li_nodes))
+
         elif block_type == BlockType.ordered_list:
             items = block.splitlines()
             li_nodes = []
@@ -42,12 +46,14 @@ def markdown_to_html_node(markdown):
                     li_nodes.append(li_node)
             node = ParentNode("ol", li_nodes)
             html_nodes.append(node)
+
         elif block_type == BlockType.code:
             lines = block.splitlines()
-            code_content = "\n".join(lines[1:-1])
+            code_content = "\n".join(lines[1:-1]) + "\n"
             code_leaf = LeafNode("code", code_content)
             pre_node = ParentNode("pre", [code_leaf])
             html_nodes.append(pre_node)
+
         elif block_type == BlockType.quote:
             clean_lines = []
             for line in block.splitlines():
